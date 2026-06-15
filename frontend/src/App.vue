@@ -15,20 +15,45 @@
       </button>
 
       <!-- STA/LTA Parameters -->
-      <div class="bg-gray-800 rounded-xl p-3 space-y-2">
+      <div class="bg-gray-800 rounded-xl p-3 space-y-3">
         <h3 class="text-cyan-300 font-bold text-sm">STA/LTA 参数</h3>
+
         <div>
-          <label class="text-gray-400 text-xs">STA 窗口: {{ store.staWindow.toFixed(1) }}s</label>
-          <input type="range" v-model.number="store.staWindow" min="0.5" max="5" step="0.1" class="w-full" />
+          <div class="flex justify-between items-baseline">
+            <label class="text-gray-300 text-xs font-medium">STA 窗口: {{ store.staWindow.toFixed(1) }}s</label>
+            <span class="text-cyan-400 text-[10px]">推荐 0.5–2.0s</span>
+          </div>
+          <div class="relative mt-1">
+            <input type="range" v-model.number="store.staWindow" min="0.5" max="5" step="0.1" class="w-full slider" />
+            <div class="range-highlight" style="left: 0%; width: 33.3%"></div>
+          </div>
+          <p class="text-gray-500 text-[10px] mt-1 leading-tight">短时平均窗口 · 值越小对信号突变越敏感，易检测微弱初至；值越大更平滑，减少误触发</p>
         </div>
+
         <div>
-          <label class="text-gray-400 text-xs">LTA 窗口: {{ store.ltaWindow.toFixed(1) }}s</label>
-          <input type="range" v-model.number="store.ltaWindow" min="5" max="30" step="0.5" class="w-full" />
+          <div class="flex justify-between items-baseline">
+            <label class="text-gray-300 text-xs font-medium">LTA 窗口: {{ store.ltaWindow.toFixed(1) }}s</label>
+            <span class="text-cyan-400 text-[10px]">推荐 8–15s</span>
+          </div>
+          <div class="relative mt-1">
+            <input type="range" v-model.number="store.ltaWindow" min="5" max="30" step="0.5" class="w-full slider" />
+            <div class="range-highlight" style="left: 12%; width: 28%"></div>
+          </div>
+          <p class="text-gray-500 text-[10px] mt-1 leading-tight">长时平均窗口 · 值越大背景基线越稳定，适合低信噪比检测；值过小基线波动增大</p>
         </div>
+
         <div>
-          <label class="text-gray-400 text-xs">触发阈值: {{ store.threshold.toFixed(1) }}</label>
-          <input type="range" v-model.number="store.threshold" min="1" max="10" step="0.5" class="w-full" />
+          <div class="flex justify-between items-baseline">
+            <label class="text-gray-300 text-xs font-medium">触发阈值: {{ store.threshold.toFixed(1) }}</label>
+            <span class="text-cyan-400 text-[10px]">推荐 3.0–5.0</span>
+          </div>
+          <div class="relative mt-1">
+            <input type="range" v-model.number="store.threshold" min="1" max="10" step="0.5" class="w-full slider" />
+            <div class="range-highlight" style="left: 22.2%; width: 22.2%"></div>
+          </div>
+          <p class="text-gray-500 text-[10px] mt-1 leading-tight">STA/LTA 比值门限 · 值越高仅拾取高信噪比事件；值越低拾取更多事件但可能增加误触发</p>
         </div>
+
         <button @click="runPick" class="w-full bg-cyan-600 py-2 rounded text-sm hover:bg-cyan-500">
           运行自动拾取
         </button>
@@ -91,3 +116,49 @@ function runPick() {
   store.picks = store.staLtaPicking()
 }
 </script>
+
+<style scoped>
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: #374151;
+  outline: none;
+  position: relative;
+  z-index: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #22d3ee;
+  cursor: pointer;
+  border: 2px solid #0e7490;
+  box-shadow: 0 0 4px rgba(34, 211, 238, 0.4);
+}
+
+.slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #22d3ee;
+  cursor: pointer;
+  border: 2px solid #0e7490;
+  box-shadow: 0 0 4px rgba(34, 211, 238, 0.4);
+}
+
+.range-highlight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(34, 211, 238, 0.25);
+  pointer-events: none;
+  z-index: 0;
+}
+</style>
